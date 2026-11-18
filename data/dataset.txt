@@ -1,20 +1,211 @@
-AETHER adalah sebuah proyek kecerdasan buatan open source.
-AETHER dibuat untuk mempelajari bagaimana model bahasa bekerja.
-Model bahasa belajar dari data melalui proses training.
-Neural network adalah sistem matematika yang dapat mempelajari pola.
-Transformer menggunakan attention untuk memproses hubungan antar token.
-Attention membantu model menentukan bagian konteks yang penting.
-Python adalah bahasa pemrograman yang sering digunakan dalam kecerdasan buatan.
-Machine learning memungkinkan komputer belajar dari data.
-Artificial intelligence atau kecerdasan buatan digunakan untuk menyelesaikan berbagai masalah.
-AETHER dapat dilatih menggunakan komputer atau Google Colab.
-Model yang sudah dilatih dapat digunakan untuk menghasilkan teks.
-Tujuan AETHER adalah menjadi proyek AI yang terbuka untuk dipelajari dan dikembangkan.
-Pengetahuan tentang matematika dan pemrograman penting untuk memahami artificial intelligence.
-Data yang lebih baik dapat membantu model menghasilkan keluaran yang lebih baik.
-Training adalah proses memperbaiki parameter model berdasarkan kesalahan prediksi.
-Loss digunakan untuk mengukur kesalahan model.
-Optimizer digunakan untuk memperbarui parameter neural network.
-Epoch adalah satu putaran pembelajaran terhadap dataset.
-AETHER masih merupakan model eksperimen kecil.
-Versi berikutnya dapat menggunakan dataset yang lebih besar dan training yang lebih lama.
+AETHER adalah proyek kecerdasan buatan open source yang dibuat untuk mempelajari cara kerja model bahasa.
+
+Kecerdasan buatan adalah bidang ilmu komputer yang mempelajari bagaimana komputer dapat melakukan tugas yang biasanya membutuhkan kemampuan manusia.
+
+Machine learning adalah bagian dari kecerdasan buatan yang memungkinkan komputer mempelajari pola dari data.
+
+Deep learning menggunakan neural network dengan banyak lapisan untuk mempelajari representasi data yang kompleks.
+
+Neural network terdiri dari berbagai parameter yang dapat disesuaikan selama proses training.
+
+Model bahasa mempelajari hubungan antara token dalam sebuah rangkaian teks.
+
+Training adalah proses mengubah parameter model agar prediksi model menjadi semakin baik.
+
+Pada setiap proses training, model menerima input dan mencoba memprediksi target berikutnya.
+
+Loss digunakan untuk mengukur seberapa jauh prediksi model dari target yang benar.
+
+Optimizer digunakan untuk memperbarui parameter berdasarkan nilai loss.
+
+Gradient menunjukkan arah perubahan parameter yang dapat digunakan untuk mengurangi loss.
+
+Learning rate menentukan seberapa besar perubahan parameter pada setiap pembaruan.
+
+Epoch adalah satu putaran penuh ketika model memproses seluruh dataset training.
+
+Batch adalah sebagian data yang diproses oleh model dalam satu langkah training.
+
+Dataset yang baik dapat membantu model mempelajari pola bahasa dengan lebih baik.
+
+Dataset training biasanya dibagi menjadi data training dan data validation.
+
+Data training digunakan untuk memperbarui parameter model.
+
+Data validation digunakan untuk mengukur kemampuan model pada data yang tidak digunakan untuk memperbarui parameter.
+
+Overfitting terjadi ketika model terlalu menghafal data training dan kurang mampu melakukan generalisasi.
+
+Underfitting terjadi ketika model belum cukup belajar dari data.
+
+Transformer adalah arsitektur neural network yang banyak digunakan dalam model bahasa modern.
+
+Transformer menggunakan mekanisme attention untuk mempelajari hubungan antar bagian dalam sequence.
+
+Self attention memungkinkan sebuah token memperhatikan token lain dalam konteks yang sama.
+
+Context adalah bagian teks yang tersedia bagi model ketika membuat prediksi.
+
+Context length menentukan jumlah token yang dapat diproses model dalam satu sequence.
+
+Embedding mengubah token menjadi representasi numerik yang dapat diproses neural network.
+
+Position embedding memberikan informasi mengenai posisi token dalam sequence.
+
+Layer normalization membantu menjaga proses pembelajaran neural network tetap stabil.
+
+Feed forward network memproses representasi setiap token setelah mekanisme attention.
+
+Activation function memungkinkan neural network mempelajari hubungan yang tidak sederhana.
+
+GELU adalah salah satu fungsi aktivasi yang sering digunakan dalam transformer.
+
+Parameter model adalah nilai yang dipelajari selama training.
+
+Semakin besar jumlah parameter, semakin besar kapasitas model untuk mempelajari pola, tetapi kebutuhan komputasinya juga meningkat.
+
+Inference adalah proses menggunakan model yang telah dilatih untuk menghasilkan prediksi.
+
+Text generation adalah proses menghasilkan token baru berdasarkan konteks sebelumnya.
+
+Model autoregressive memprediksi token berikutnya berdasarkan token yang telah tersedia.
+
+Temperature dapat digunakan untuk mengatur tingkat variasi ketika model menghasilkan teks.
+
+Sampling memungkinkan model memilih token berikutnya berdasarkan distribusi probabilitas.
+
+Vocabulary adalah kumpulan token yang dapat dipahami oleh tokenizer.
+
+Tokenizer mengubah teks menjadi token numerik yang dapat diproses model.
+
+Character tokenizer membagi teks berdasarkan karakter.
+
+Subword tokenizer membagi teks menjadi unit yang lebih efisien dibandingkan character tokenizer untuk banyak bahasa.
+
+Byte pair encoding atau BPE merupakan salah satu metode tokenisasi berbasis subword.
+
+Tokenization merupakan tahap penting sebelum teks diberikan kepada model bahasa.
+
+Python merupakan bahasa pemrograman yang banyak digunakan dalam machine learning.
+
+PyTorch adalah framework yang dapat digunakan untuk membangun dan melatih neural network.
+
+Tensor adalah struktur data numerik yang digunakan oleh framework seperti PyTorch.
+
+GPU dapat mempercepat operasi matematika paralel yang digunakan dalam deep learning.
+
+Google Colab menyediakan lingkungan notebook yang dapat digunakan untuk eksperimen machine learning.
+
+Checkpoint adalah salinan parameter model yang disimpan selama proses training.
+
+Checkpoint memungkinkan training dilanjutkan tanpa memulai dari awal.
+
+Training yang panjang membutuhkan sistem penyimpanan checkpoint yang baik.
+
+Eksperimen machine learning sebaiknya memiliki konfigurasi yang jelas dan dapat direproduksi.
+
+Random seed dapat digunakan untuk membuat beberapa eksperimen lebih konsisten.
+
+Evaluasi model diperlukan untuk mengetahui apakah perubahan pada model memberikan hasil yang lebih baik.
+
+Validation loss dapat digunakan untuk membandingkan performa model pada data validation.
+
+Perplexity merupakan salah satu metrik yang sering digunakan untuk mengevaluasi language model.
+
+Nilai perplexity yang lebih rendah biasanya menunjukkan prediksi token yang lebih baik pada dataset evaluasi.
+
+Namun metrik tidak selalu menggambarkan kemampuan model dalam semua jenis tugas.
+
+Model bahasa dapat digunakan untuk berbagai eksperimen seperti text generation, klasifikasi, dan pemahaman konteks.
+
+Pengetahuan matematika penting untuk memahami machine learning.
+
+Aljabar linear digunakan dalam representasi tensor dan operasi neural network.
+
+Probabilitas digunakan untuk memahami distribusi keluaran model.
+
+Kalkulus digunakan untuk memahami gradient dan proses optimisasi.
+
+Statistika digunakan untuk memahami data dan mengevaluasi hasil eksperimen.
+
+Kemampuan pemrograman membantu peneliti membuat eksperimen machine learning.
+
+Eksperimen yang baik harus dapat diulang dengan konfigurasi yang sama.
+
+Dokumentasi membantu orang lain memahami bagaimana sebuah model dibuat.
+
+Open source memungkinkan kode dan eksperimen dipelajari oleh komunitas.
+
+AETHER dikembangkan sebagai proyek pembelajaran mengenai language model.
+
+Versi pertama AETHER menggunakan character tokenizer dan transformer kecil.
+
+Versi berikutnya dapat menggunakan dataset yang lebih besar dan tokenizer yang lebih baik.
+
+AETHER v0.2 berfokus pada peningkatan pipeline training.
+
+Pipeline training mencakup dataset, tokenizer, model, optimizer, checkpoint, dan evaluasi.
+
+Sistem checkpoint akan memungkinkan training dilanjutkan setelah runtime berhenti.
+
+Google Colab memiliki batas waktu runtime sehingga checkpoint sangat penting.
+
+Model dapat dilatih pada GPU dan kemudian digunakan pada perangkat dengan sumber daya lebih terbatas.
+
+Optimasi model diperlukan ketika model akan dijalankan pada perangkat mobile.
+
+Quantization dapat mengurangi ukuran model dan kebutuhan memori.
+
+Model yang kecil lebih mudah digunakan pada perangkat dengan keterbatasan sumber daya.
+
+Eksperimen AETHER dilakukan secara bertahap agar setiap komponen dapat diuji.
+
+Setiap versi model sebaiknya memiliki perubahan yang terdokumentasi.
+
+Versi model dapat dibandingkan berdasarkan konfigurasi training dan hasil evaluasi.
+
+Tujuan utama proyek AETHER bukan hanya menghasilkan model tetapi juga memahami proses pembuatannya.
+
+Memahami proses training membantu pengembang menemukan penyebab kesalahan pada model.
+
+Debugging merupakan bagian penting dalam pengembangan machine learning.
+
+Jika training menghasilkan loss yang tidak stabil, konfigurasi training perlu diperiksa.
+
+Learning rate yang terlalu besar dapat menyebabkan proses training tidak stabil.
+
+Learning rate yang terlalu kecil dapat membuat training berjalan sangat lambat.
+
+Batch size memengaruhi penggunaan memori dan karakteristik training.
+
+Context length memengaruhi jumlah informasi yang dapat diproses model dalam satu sequence.
+
+Jumlah layer memengaruhi kedalaman transformer.
+
+Jumlah attention head memengaruhi cara model memproses hubungan dalam representasi.
+
+Embedding dimension menentukan ukuran representasi internal token.
+
+Model kecil cocok untuk eksperimen awal karena membutuhkan sumber daya yang lebih sedikit.
+
+Setelah pipeline stabil, ukuran model dapat ditingkatkan secara bertahap.
+
+Penelitian kecerdasan buatan membutuhkan eksperimen, evaluasi, dan dokumentasi.
+
+AETHER adalah eksperimen untuk memahami bagaimana sebuah language model dapat dibangun dari dasar.
+
+Tujuan jangka panjang AETHER adalah menjadi proyek open source yang dapat dipelajari dan dikembangkan oleh siapa saja.
+
+Belajar artificial intelligence membutuhkan pemahaman matematika, pemrograman, data, dan eksperimen.
+
+Tidak ada model yang langsung sempurna pada percobaan pertama.
+
+Perbaikan model dilakukan melalui siklus eksperimen, evaluasi, dan perubahan konfigurasi.
+
+AETHER akan terus dikembangkan melalui beberapa versi.
+
+Setiap versi harus memiliki tujuan yang jelas dan dapat diuji.
+
+Model yang baik membutuhkan data yang baik, arsitektur yang sesuai, dan proses training yang tepat.
+
+AETHER v0.2 menjadi langkah berikutnya menuju eksperimen language model yang lebih serius.
