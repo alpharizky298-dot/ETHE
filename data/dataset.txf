@@ -1,0 +1,20 @@
+AETHER adalah sebuah proyek kecerdasan buatan open source.
+AETHER dibuat untuk mempelajari bagaimana model bahasa bekerja.
+Model bahasa belajar dari data melalui proses training.
+Neural network adalah sistem matematika yang dapat mempelajari pola.
+Transformer menggunakan attention untuk memproses hubungan antar token.
+Attention membantu model menentukan bagian konteks yang penting.
+Python adalah bahasa pemrograman yang sering digunakan dalam kecerdasan buatan.
+Machine learning memungkinkan komputer belajar dari data.
+Artificial intelligence atau kecerdasan buatan digunakan untuk menyelesaikan berbagai masalah.
+AETHER dapat dilatih menggunakan komputer atau Google Colab.
+Model yang sudah dilatih dapat digunakan untuk menghasilkan teks.
+Tujuan AETHER adalah menjadi proyek AI yang terbuka untuk dipelajari dan dikembangkan.
+Pengetahuan tentang matematika dan pemrograman penting untuk memahami artificial intelligence.
+Data yang lebih baik dapat membantu model menghasilkan keluaran yang lebih baik.
+Training adalah proses memperbaiki parameter model berdasarkan kesalahan prediksi.
+Loss digunakan untuk mengukur kesalahan model.
+Optimizer digunakan untuk memperbarui parameter neural network.
+Epoch adalah satu putaran pembelajaran terhadap dataset.
+AETHER masih merupakan model eksperimen kecil.
+Versi berikutnya dapat menggunakan dataset yang lebih besar dan training yang lebih lama.
