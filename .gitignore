@@ -221,3 +221,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# AETHER-1 AI model files
+checkpoints/*.pt
+checkpoints/*.pth
+checkpoints/*.bin
+checkpoints/*.safetensors
+
+# AETHER-1 temporary files
+*.tmp
+*.temp
+
+# Training logs
+logs/
