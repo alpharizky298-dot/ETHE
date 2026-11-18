@@ -1,123 +1,135 @@
 import os
-import tempfile
 
 import torch
 
 from tokenizer.tokenizer import CharacterTokenizer
-from training.dataset import TextDataset
 from model.config import AetherConfig
 from model.aether import AetherModel
 
 
-print("=== TEST 1: TOKENIZER ===")
-
-text = "AETHER adalah AI."
-
-tokenizer = CharacterTokenizer(text)
-
-encoded = tokenizer.encode(text)
-decoded = tokenizer.decode(encoded)
-
-assert decoded == text
-
-print("Tokenizer:", "OK")
-
-
-print()
-print("=== TEST 2: DATASET ===")
-
-dataset_text = (
-    "AETHER adalah proyek AI. "
-    "AETHER belajar dari data. "
-    "AI menggunakan neural network."
+CHECKPOINT_PATH = (
+    "checkpoints/aether_v0_1.pt"
 )
 
-tokenizer = CharacterTokenizer(dataset_text)
-
-dataset = TextDataset(
-    dataset_text,
-    tokenizer,
-    block_size=16
+TOKENIZER_PATH = (
+    "checkpoints/vocab.json"
 )
 
-x, y = dataset[0]
+device = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "cpu"
+)
 
-assert x.shape == y.shape
-assert x.shape[0] == 16
 
-print("Dataset:", "OK")
+# =========================
+# CHECK FILE
+# =========================
+
+if not os.path.exists(CHECKPOINT_PATH):
+    raise FileNotFoundError(
+        "Checkpoint belum ditemukan. "
+        "Jalankan training terlebih dahulu."
+    )
+
+if not os.path.exists(TOKENIZER_PATH):
+    raise FileNotFoundError(
+        "Tokenizer belum ditemukan. "
+        "Jalankan training terlebih dahulu."
+    )
 
 
-print()
-print("=== TEST 3: MODEL ===")
+# =========================
+# LOAD TOKENIZER
+# =========================
+
+tokenizer = CharacterTokenizer.load(
+    TOKENIZER_PATH
+)
+
+
+# =========================
+# LOAD CHECKPOINT
+# =========================
+
+checkpoint = torch.load(
+    CHECKPOINT_PATH,
+    map_location=device,
+    weights_only=False
+)
+
+saved_config = checkpoint["config"]
 
 config = AetherConfig(
-    vocab_size=tokenizer.vocab_size,
-    embedding_dim=64,
-    num_layers=2,
-    num_heads=4,
-    context_length=16,
-    dropout=0.1
+    vocab_size=saved_config["vocab_size"],
+    embedding_dim=saved_config["embedding_dim"],
+    num_layers=saved_config["num_layers"],
+    num_heads=saved_config["num_heads"],
+    context_length=saved_config["context_length"],
+    dropout=saved_config["dropout"]
 )
+
+
+# =========================
+# LOAD MODEL
+# =========================
 
 model = AetherModel(config)
 
-input_ids = torch.randint(
-    0,
-    config.vocab_size,
-    (2, 16)
+model.load_state_dict(
+    checkpoint["model_state_dict"]
 )
 
-logits = model(input_ids)
-
-assert logits.shape == (
-    2,
-    16,
-    config.vocab_size
-)
-
-print("Model:", "OK")
-
-
-print()
-print("=== TEST 4: GENERATION ===")
-
-generated = model.generate(
-    input_ids[:, :4],
-    max_new_tokens=5
-)
-
-assert generated.shape[1] == 9
-
-print("Generation:", "OK")
-
-
-print()
-print("=== TEST 5: SAVE TOKENIZER ===")
-
-with tempfile.NamedTemporaryFile(
-    suffix=".json",
-    delete=False
-) as file:
-
-    temp_path = file.name
-
-tokenizer.save(temp_path)
-
-loaded = CharacterTokenizer.load(
-    temp_path
-)
-
-assert loaded.decode(
-    loaded.encode(dataset_text)
-) == dataset_text
-
-os.remove(temp_path)
-
-print("Tokenizer save/load:", "OK")
+model.to(device)
+model.eval()
 
 
 print()
 print("==============================")
-print("ALL TESTS PASSED!")
+print("       AETHER-1 v0.1")
 print("==============================")
+print("Device:", device)
+print("Ketik 'exit' untuk keluar.")
+print()
+
+
+# =========================
+# CHAT LOOP
+# =========================
+
+while True:
+
+    prompt = input("You: ")
+
+    if prompt.lower().strip() == "exit":
+        print("AETHER: Sampai jumpa.")
+        break
+
+    if not prompt:
+        continue
+
+    try:
+        tokens = tokenizer.encode(prompt)
+
+    except ValueError as error:
+        print("AETHER:", error)
+        continue
+
+    input_ids = torch.tensor(
+        [tokens],
+        dtype=torch.long,
+        device=device
+    )
+
+    output_ids = model.generate(
+        input_ids,
+        max_new_tokens=100,
+        temperature=0.8
+    )
+
+    generated_text = tokenizer.decode(
+        output_ids[0].tolist()
+    )
+
+    print("AETHER:", generated_text)
+    print()
