@@ -1,10 +1,19 @@
 import os
-import math
-import random
+import sys
+import tempfile
 
 import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, random_split
+
+# Pastikan root project masuk Python path
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 
 from tokenizer.tokenizer import CharacterTokenizer
 from training.dataset import TextDataset
@@ -12,221 +21,184 @@ from model.config import AetherConfig
 from model.aether import AetherModel
 
 
-# =========================
-# CONFIG
-# =========================
+print("=" * 40)
+print("ETHE TEST SUITE")
+print("=" * 40)
 
-SEED = 42
 
-BATCH_SIZE = 16
-BLOCK_SIZE = 64
+# =====================================
+# TEST 1 — TOKENIZER
+# =====================================
 
-EPOCHS = 20
-LEARNING_RATE = 3e-4
+print("\n[1/5] Testing tokenizer...")
 
-VALIDATION_RATIO = 0.1
+text = "Hello ETHE"
 
-CHECKPOINT_DIR = "checkpoints"
-CHECKPOINT_PATH = os.path.join(
-    CHECKPOINT_DIR,
-    "aether_v0_2_latest.pt"
+tokenizer = CharacterTokenizer(
+    text=text
 )
 
-os.makedirs(CHECKPOINT_DIR, exist_ok=True)
+encoded = tokenizer.encode(text)
+decoded = tokenizer.decode(encoded)
+
+assert decoded == text
+
+print("Tokenizer: OK")
 
 
-# =========================
-# REPRODUCIBILITY
-# =========================
+# =====================================
+# TEST 2 — TOKENIZER SAVE/LOAD
+# =====================================
 
-random.seed(SEED)
-torch.manual_seed(SEED)
+print("\n[2/5] Testing tokenizer save/load...")
 
-if torch.cuda.is_available():
-    torch.cuda.manual_seed_all(SEED)
+with tempfile.NamedTemporaryFile(
+    suffix=".json",
+    delete=False
+) as temp_file:
 
-
-# =========================
-# DEVICE
-# =========================
-
-device = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
-)
-
-print("Device:", device)
-
-if torch.cuda.is_available():
-    print("GPU:", torch.cuda.get_device_name(0))
+    temp_path = temp_file.name
 
 
-# =========================
-# LOAD DATASET
-# =========================
+try:
 
-with open(
-    "data/dataset.txt",
-    "r",
-    encoding="utf-8"
-) as file:
-    text = file.read()
+    tokenizer.save(temp_path)
 
-print("Dataset characters:", len(text))
-
-
-# =========================
-# TOKENIZER
-# =========================
-
-tokenizer = CharacterTokenizer(text=text)
-
-print("Vocabulary size:", tokenizer.vocab_size)
-
-tokenizer.save(
-    os.path.join(
-        CHECKPOINT_DIR,
-        "vocab.json"
+    loaded_tokenizer = (
+        CharacterTokenizer.load(temp_path)
     )
+
+    assert (
+        loaded_tokenizer.encode(text)
+        == encoded
+    )
+
+    assert (
+        loaded_tokenizer.decode(encoded)
+        == text
+    )
+
+    print("Tokenizer save/load: OK")
+
+finally:
+
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
+
+
+# =====================================
+# TEST 3 — DATASET
+# =====================================
+
+print("\n[3/5] Testing dataset...")
+
+dataset_text = (
+    "ETHE adalah model bahasa. "
+    "ETHE belajar dari data. "
+    "Model bahasa memprediksi token."
 )
 
-
-# =========================
-# DATASET
-# =========================
+dataset_tokenizer = CharacterTokenizer(
+    text=dataset_text
+)
 
 dataset = TextDataset(
-    text=text,
-    tokenizer=tokenizer,
-    block_size=BLOCK_SIZE
+    text=dataset_text,
+    tokenizer=dataset_tokenizer,
+    block_size=16
 )
 
-validation_size = max(
-    1,
-    int(len(dataset) * VALIDATION_RATIO)
-)
+x, y = dataset[0]
 
-training_size = len(dataset) - validation_size
+assert x.shape == (16,)
+assert y.shape == (16,)
 
-train_dataset, validation_dataset = random_split(
-    dataset,
-    [training_size, validation_size],
-    generator=torch.Generator().manual_seed(SEED)
-)
+assert x.dtype == torch.long
+assert y.dtype == torch.long
 
-train_loader = DataLoader(
-    train_dataset,
-    batch_size=BATCH_SIZE,
-    shuffle=True,
-    drop_last=True
-)
-
-validation_loader = DataLoader(
-    validation_dataset,
-    batch_size=BATCH_SIZE,
-    shuffle=False
-)
-
-print("Training samples:", len(train_dataset))
-print("Validation samples:", len(validation_dataset))
+print("Dataset: OK")
+print("Input shape:", tuple(x.shape))
+print("Target shape:", tuple(y.shape))
 
 
-# =========================
-# MODEL
-# =========================
+# =====================================
+# TEST 4 — MODEL
+# =====================================
+
+print("\n[4/5] Testing model...")
 
 config = AetherConfig(
-    vocab_size=tokenizer.vocab_size,
+    vocab_size=dataset_tokenizer.vocab_size,
     embedding_dim=128,
     num_layers=2,
     num_heads=4,
-    context_length=BLOCK_SIZE,
+    context_length=16,
     dropout=0.1
 )
 
 model = AetherModel(config)
-model.to(device)
 
+model.eval()
 
-# =========================
-# OPTIMIZER
-# =========================
-
-optimizer = torch.optim.AdamW(
-    model.parameters(),
-    lr=LEARNING_RATE
+test_input = torch.randint(
+    0,
+    config.vocab_size,
+    (2, 16)
 )
 
-criterion = nn.CrossEntropyLoss()
+with torch.no_grad():
+
+    logits = model(test_input)
 
 
-# =========================
-# COUNT PARAMETERS
-# =========================
-
-parameter_count = sum(
-    parameter.numel()
-    for parameter in model.parameters()
+assert logits.shape == (
+    2,
+    16,
+    config.vocab_size
 )
 
-print("Parameters:", parameter_count)
+print("Model forward: OK")
+print("Output shape:", tuple(logits.shape))
 
 
-# =========================
-# RESUME CHECKPOINT
-# =========================
+# =====================================
+# TEST 5 — GENERATION
+# =====================================
 
-start_epoch = 0
-train_losses = []
-validation_losses = []
+print("\n[5/5] Testing generation...")
 
-if os.path.exists(CHECKPOINT_PATH):
+start_tokens = torch.randint(
+    0,
+    config.vocab_size,
+    (1, 5)
+)
 
-    print()
-    print("Checkpoint ditemukan.")
-    print("Melanjutkan training...")
+with torch.no_grad():
 
-    checkpoint = torch.load(
-        CHECKPOINT_PATH,
-        map_location=device,
-        weights_only=False
+    generated = model.generate(
+        start_tokens,
+        max_new_tokens=10,
+        temperature=0.8
     )
 
-    model.load_state_dict(
-        checkpoint["model_state_dict"]
-    )
 
-    optimizer.load_state_dict(
-        checkpoint["optimizer_state_dict"]
-    )
+assert generated.shape[0] == 1
 
-    start_epoch = checkpoint["epoch"] + 1
+assert generated.shape[1] == 15
 
-    train_losses = checkpoint.get(
-        "train_losses",
-        []
-    )
-
-    validation_losses = checkpoint.get(
-        "validation_losses",
-        []
-    )
-
-    print(
-        "Melanjutkan dari epoch:",
-        start_epoch + 1
-    )
-
-else:
-
-    print()
-    print("Checkpoint tidak ditemukan.")
-    print("Memulai training dari awal.")
+print("Generation: OK")
+print(
+    "Generated shape:",
+    tuple(generated.shape)
+)
 
 
-# =========================
-# TRAINING
-# =========================
+# =====================================
+# RESULT
+# =====================================
 
-for epoch in range(start_epoch, EPOCHS):
-
-   
+print()
+print("=" * 40)
+print("ALL TESTS PASSED")
+print("=" * 40)
+print("ETHE v0.2 basic components bekerja.")
